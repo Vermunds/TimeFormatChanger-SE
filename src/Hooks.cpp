@@ -1,6 +1,8 @@
 #include "skse64_common/BranchTrampoline.h"
 
 #include "RE/BSFixedString.h"
+#include "RE/BSTimeManager.h"
+#include "RE/GameSettingCollection.h"
 
 #include "Hooks.h"
 #include "Formatter.h"
@@ -9,161 +11,106 @@
 
 namespace Hooks
 {
-	const char*(*GetDaySuffix)(GameTimeHolder* a_holder, UInt8 a_day);
-
-	const char* GetMonthName(UInt8 a_month)
+	const char* GetOrdinalSuffix(UInt32 a_number)
 	{
-		if (a_month <= 11)
-		{
-			uintptr_t* ptr = reinterpret_cast<uintptr_t*>(Offsets::MonthNameHolder.GetUIntPtr() + (a_month * 8));
-			const char** str = reinterpret_cast<const char**>(*ptr + 8);
-			return *str;
+		RE::GameSettingCollection* gmst = RE::GameSettingCollection::GetSingleton();
+
+		if (a_number >= 11 && a_number <= 13) {
+			return gmst->GetSetting("sDefaultOrdSuffix")->GetString(); //th
 		}
-		return "Bad Month";
-	}
-
-	const char* GetWeekDayName(UInt8 a_weekday)
-	{
-		UInt8 weekday = a_weekday % 7;
-		uintptr_t* ptr = reinterpret_cast<uintptr_t*>(Offsets::WeekDayNameHolder.GetUIntPtr() + (weekday * 8));
-		const char** str = reinterpret_cast<const char**>(*ptr + 8);
-		return *str;
-	}
-
-	std::string GetImmersiveName(UInt8 a_hour)
-	{
-		TimeFormatChanger::SettingStore* settings = TimeFormatChanger::SettingStore::GetSingleton();
-
-		switch (a_hour)
+		switch (a_number % 10)
 		{
-		case 0:
-			return settings->immersiveName_00_01;
 		case 1:
-			return settings->immersiveName_01_02;
+			return gmst->GetSetting("sFirstOrdSuffix")->GetString(); //st
 		case 2:
-			return settings->immersiveName_02_03;
+			return gmst->GetSetting("sSecondOrdSuffix")->GetString(); //nd
 		case 3:
-			return settings->immersiveName_03_04;
-		case 4:
-			return settings->immersiveName_04_05;
-		case 5:
-			return settings->immersiveName_05_06;
-		case 6:
-			return settings->immersiveName_06_07;
-		case 7:
-			return settings->immersiveName_07_08;
-		case 8:
-			return settings->immersiveName_08_09;
-		case 9:
-			return settings->immersiveName_09_10;
-		case 10:
-			return settings->immersiveName_10_11;
-		case 11:
-			return settings->immersiveName_11_12;
-		case 12:
-			return settings->immersiveName_12_13;
-		case 13:
-			return settings->immersiveName_13_14;
-		case 14:
-			return settings->immersiveName_14_15;
-		case 15:
-			return settings->immersiveName_15_16;
-		case 16:
-			return settings->immersiveName_16_17;
-		case 17:
-			return settings->immersiveName_17_18;
-		case 18:
-			return settings->immersiveName_18_19;
-		case 19:
-			return settings->immersiveName_19_20;
-		case 20:
-			return settings->immersiveName_20_21;
-		case 21:
-			return settings->immersiveName_21_22;
-		case 22:
-			return settings->immersiveName_22_23;
-		case 23:
-			return settings->immersiveName_23_24;
+			return gmst->GetSetting("sThirdOrdSuffix")->GetString(); //nd
 		default:
-			return "Bad Hour";
+			return gmst->GetSetting("sDefaultOrdSuffix")->GetString(); //th
 		}
 	}
 
-	void FormatTime_Hook(GameTimeHolder* a_holder, char* a_str, UInt64 a_bufferSize, bool a_showYear)
+	void FormatTime_Hook(RE::BSTimeManager* a_timeManager, char* a_str, UInt64 a_bufferSize, bool a_showYear)
 	{
-		float year = a_holder->year->value;
-		float month = a_holder->month->value;
-		float day = a_holder->day->value;
-		float hour = a_holder->hour->value;
-		float weekday = a_holder->weekday->value;
+		UInt32 year = a_timeManager->GetYear();
+		UInt32 month = a_timeManager->GetMonth() + 1; //indexed from 0
+		UInt32 day = static_cast<UInt32>(a_timeManager->GetDay());
+		UInt32 hour = static_cast<UInt32>(a_timeManager->GetHour());
+		UInt32 minutes = (a_timeManager->GetHour() - hour) * 60;
 
 		TimeFormatChanger::SettingStore* settings = TimeFormatChanger::SettingStore::GetSingleton();
 		TimeFormatChanger::Formatter* formatter = new TimeFormatChanger::Formatter();
+		RE::GameSettingCollection* gmst = RE::GameSettingCollection::GetSingleton();
 
+		//Era
 		formatter->era = "4E";
-		formatter->year = std::to_string(static_cast<UInt8>(year));
 
-		UInt8 monthInt = static_cast<UInt8>(month + 1);
-		if (monthInt < 10 && settings->leadingZeroMonth)
+		//Year
+		formatter->year = std::to_string(year);
+
+		//Month
+		if (month < 10 && settings->leadingZeroMonth)
 		{
 			std::string leadingZero = "0";
-			formatter->month = leadingZero.append(std::to_string(monthInt));
+			formatter->month = leadingZero.append(std::to_string(month));
 		}
 		else
 		{
-			formatter->month = std::to_string(monthInt);
+			formatter->month = std::to_string(month);
 		}
-		UInt8 dayInt = static_cast<UInt8>(day);
-		if (dayInt < 10 && settings->leadingZeroDay)
+
+		//Day of month
+		if (day < 10 && settings->leadingZeroDay)
 		{
 			std::string leadingZero = "0";
-			formatter->day = leadingZero.append(std::to_string(dayInt));
+			formatter->day = leadingZero.append(std::to_string(day));
 		}
 		else
 		{
-			formatter->day = std::to_string(dayInt);
+			formatter->day = std::to_string(day);
 		}
 
-		UInt8 hourInt = static_cast<UInt8>(hour);
+		//Hour (24h)
 		if (hour < 10 && settings->leadingZeroHour)
 		{
 			std::string leadingZero = "0";
-			formatter->hours24 = leadingZero.append(std::to_string(hourInt));
+			formatter->hours24 = leadingZero.append(std::to_string(hour));
 		}
 		else
 		{
-			formatter->hours24 = std::to_string(hourInt);
+			formatter->hours24 = std::to_string(hour);
 		}
 
+		//Hour (12h)
 		if (hour < 1)
 		{
 			//After midnight
 			//12:00 AM - 12:59 AM
-			formatter->am_pm = reinterpret_cast<RE::BSFixedString*>(Offsets::AM_str.GetUIntPtr())->c_str();
-			formatter->hours12 = std::to_string(static_cast<UInt8>(hour + 12));
+			formatter->am_pm = gmst->GetSetting("sTimeAM")->GetString();
+			formatter->hours12 = std::to_string(hour + 12);
 		}
 		else if (hour >= 1 && hour < 12)
 		{
 			//1:00 AM - 12:59 AM
-			formatter->am_pm = reinterpret_cast<RE::BSFixedString*>(Offsets::AM_str.GetUIntPtr())->c_str();
-			formatter->hours12 = std::to_string(static_cast<UInt8>(hour));
+			formatter->am_pm = gmst->GetSetting("sTimeAM")->GetString();
+			formatter->hours12 = std::to_string(hour);
 		}
 		else if (hour >= 12 && hour < 13)
 		{
 			//After noon
 			//12:00 PM - 12:59 PM
-			formatter->am_pm = reinterpret_cast<RE::BSFixedString*>(Offsets::PM_str.GetUIntPtr())->c_str();
-			formatter->hours12 = std::to_string(static_cast<UInt8>(hour));
+			formatter->am_pm = gmst->GetSetting("sTimePM")->GetString();
+			formatter->hours12 = std::to_string(hour);
 		}
 		else
 		{
 			//1:00 PM - 11:59 PM
-			formatter->am_pm = reinterpret_cast<RE::BSFixedString*>(Offsets::PM_str.GetUIntPtr())->c_str();
-			formatter->hours12 = std::to_string(static_cast<UInt8>(hour - 12));
+			formatter->am_pm = gmst->GetSetting("sTimePM")->GetString();
+			formatter->hours12 = std::to_string(hour - 12);
 		}
 
-
-		UInt8 minutes = static_cast<UInt8>((hour - static_cast<UInt8>(hour)) * 60);
+		//Minutes
 		if (minutes < 10)
 		{
 			std::string leadingZero = "0";
@@ -174,12 +121,28 @@ namespace Hooks
 			formatter->minutes = std::to_string(minutes);
 		}
 		
-		formatter->daySuffix = GetDaySuffix(a_holder, static_cast<UInt8>(day));
-		formatter->of = reinterpret_cast<RE::BSFixedString*>(Offsets::of_str.GetUIntPtr())->c_str();
+		//Ordinal suffix
+		formatter->daySuffix = GetOrdinalSuffix(day);
 
-		formatter->immersiveName = GetImmersiveName(static_cast<UInt8>(hour));
-		formatter->longMonth = GetMonthName(static_cast<UInt8>(month));
-		formatter->weekday = GetWeekDayName(static_cast<UInt8>(weekday));
+		//The string " of "
+		formatter->of = gmst->GetSetting("sOf")->GetString();
+
+		//Immersive Name
+		if (hour < 24)
+		{
+			formatter->immersiveName = settings->immersiveNames[hour];
+		}
+		else
+		{
+			formatter->immersiveName = "Bad Hour";
+		}
+				
+
+		//Full name of the month
+		formatter->longMonth = a_timeManager->GetMonthName();
+
+		//Day of week
+		formatter->weekday = a_timeManager->GetDayName();
 
 		std::string formattedString;
 
@@ -191,6 +154,7 @@ namespace Hooks
 		{
 			formattedString = formatter->GetFormattedTime(settings->formatNoYear);
 		}
+
 		delete formatter;
 
 		strcpy_s(a_str, a_bufferSize, formattedString.c_str());
@@ -198,7 +162,6 @@ namespace Hooks
 
 	void InstallHook()
 	{
-		GetDaySuffix = reinterpret_cast<const char*(*)(GameTimeHolder*, UInt8)>(Offsets::GetDaySuffix.GetUIntPtr());
 		g_branchTrampoline.Write5Branch(Offsets::FormatTime_Hook.GetUIntPtr(), (uintptr_t)FormatTime_Hook);
 	}
 }
