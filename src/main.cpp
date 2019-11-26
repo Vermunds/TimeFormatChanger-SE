@@ -30,7 +30,7 @@ extern "C" {
 			return false;
 		}
 
-		if ((a_skse->runtimeVersion != RUNTIME_VERSION_1_5_80) && (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_73)) {
+		if ((a_skse->runtimeVersion != RUNTIME_VERSION_1_5_97) && (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_80) && (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_73)) {
 			_FATALERROR("Unsupported runtime version %08X!\n", a_skse->runtimeVersion);
 			return false;
 		}
