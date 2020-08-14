@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Hooks
+namespace TimeFormatChanger
 {
 	void InstallHook();
 }

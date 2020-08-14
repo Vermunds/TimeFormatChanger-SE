@@ -5,11 +5,11 @@
 
 namespace TimeFormatChanger
 {
-	class SettingStore
+	class Settings
 	{
 	private:
-		static SettingStore * singleton;
-		SettingStore();
+		static Settings * singleton;
+		Settings();
 	public:
 		std::string format;
 		std::string formatNoYear;
@@ -20,7 +20,7 @@ namespace TimeFormatChanger
 
 		std::string immersiveNames[24];
 
-		static SettingStore* GetSingleton();
+		static Settings* GetSingleton();
 	};
 
 	extern void LoadSettings();

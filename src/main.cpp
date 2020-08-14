@@ -1,58 +1,81 @@
-﻿#include "skse64_common/BranchTrampoline.h" 
-#include "skse64_common/skse_version.h"
-#include "skse64/PluginAPI.h"
+﻿#include "SKSE/SKSE.h"
 
 #include "version.h"
 #include "Settings.h"
 #include "Hooks.h"
 
-static PluginHandle	g_pluginHandle = kPluginHandle_Invalid;
-static SKSEMessagingInterface* g_messaging = 0;
+#include <winuser.h>
+#include <spdlog\include\spdlog\sinks\msvc_sink.h>
+#include <spdlog\include\spdlog\sinks\basic_file_sink.h>
+#include <spdlog\spdlog.h>
+#include <filesystem>
+
+void ShowErrorMessage(std::string a_error)
+{
+	MessageBoxA(nullptr, a_error.c_str(), "Time Format Changer - Error", MB_OK | MB_ICONERROR | MB_DEFBUTTON2 | MB_SYSTEMMODAL);
+}
 
 extern "C" {
-	bool SKSEPlugin_Query(const SKSEInterface* a_skse, PluginInfo* a_info)
+	bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
 	{
-		SKSE::Logger::OpenRelative(FOLDERID_Documents, L"\\My Games\\Skyrim Special Edition\\SKSE\\TimeFormatChanger.log");
-		SKSE::Logger::SetPrintLevel(SKSE::Logger::Level::kDebugMessage);
-		SKSE::Logger::SetFlushLevel(SKSE::Logger::Level::kDebugMessage);
-		SKSE::Logger::UseLogStamp(true);
+		auto path = SKSE::log::log_directory() / "TimeFormatChanger.log";
+		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path.string(), true);
+		auto log = std::make_shared<spdlog::logger>("global log", std::move(sink));
 
-		_MESSAGE("TimeFormatChanger v%s", TIMEFORMATCHANGER_VERSION_VERSTRING);
+		log->set_level(spdlog::level::trace);
+		log->flush_on(spdlog::level::trace);
 
-		a_info->infoVersion = PluginInfo::kInfoVersion;
-		a_info->name = "TimeFormatChanger";
+		spdlog::set_default_logger(std::move(log));
+		spdlog::set_pattern("%g(%#): [%^%l%$] %v", spdlog::pattern_time_type::local);
+
+		SKSE::log::info("Time Format Changer v" + std::string(TIMEFORMATCHANGER_VERSION_VERSTRING));
+
+		a_info->infoVersion = SKSE::PluginInfo::kVersion;
+		a_info->name = "Time Format Changer";
 		a_info->version = 1;
 
-		g_pluginHandle = a_skse->GetPluginHandle();
-
-		if (a_skse->isEditor) {
-			_FATALERROR("Loaded in editor, marking as incompatible!\n");
+		if (a_skse->IsEditor()) {
+			SKSE::log::critical("Loaded in editor, marking as incompatible!");
 			return false;
 		}
 
-		if ((a_skse->runtimeVersion != RUNTIME_VERSION_1_5_97) && (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_80) && (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_73)) {
-			_FATALERROR("Unsupported runtime version %08X!\n", a_skse->runtimeVersion);
+		if (a_skse->RuntimeVersion() < SKSE::RUNTIME_1_5_3) {
+			SKSE::log::critical("Unsupported runtime version " + a_skse->RuntimeVersion().string());
+			ShowErrorMessage("Unsupported runtime version " + a_skse->RuntimeVersion().string() + "\n\nPlease update your game to a more recent version to use this mod.");
 			return false;
 		}
 
-		if (g_branchTrampoline.Create(1024 * 8)) {
-			_MESSAGE("Branch trampoline creation successful");
-		} else {
-			_FATALERROR("Branch trampoline creation failed!\n");
+		//Check if Address Library is available
+		std::string fileName = "Data/SKSE/Plugins/version-" + a_skse->RuntimeVersion().string() + ".bin";
+		if (!std::filesystem::exists(fileName))
+		{
+			SKSE::log::critical("Address Library for SKSE Plugins not found for current runtime version " + a_skse->RuntimeVersion().string());
+			ShowErrorMessage("Address Library for SKSE Plugins not found for current runtime version " + a_skse->RuntimeVersion().string() + "\nThe mod will be disabled.");
+			return false;
+		}
+
+		if (SKSE::AllocTrampoline(2 << 3))
+		{
+			SKSE::log::info("Trampoline creation successful.");
+		}
+		else {
+			SKSE::log::critical("Trampoline creation failed!");
+			ShowErrorMessage("Trampoline creation failed!\nThe mod will be disabled.");
 			return false;
 		}
 
 		return true;
 	}
 
-	bool SKSEPlugin_Load(const SKSEInterface* a_skse)
+	bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 	{
-		_MESSAGE("TimeFormatChanger loaded");
+		SKSE::log::info("Time Format Changer loaded.");
 
 		TimeFormatChanger::LoadSettings();
-		_MESSAGE("Settings successfully loaded.");
+		SKSE::log::info("Settings loaded.");
 
-		Hooks::InstallHook();
+		TimeFormatChanger::InstallHook();
+		SKSE::log::info("Hooks installed.");
 
 		return true;
 	}

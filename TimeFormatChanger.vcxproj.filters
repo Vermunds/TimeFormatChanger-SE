@@ -35,9 +35,6 @@
     <ClInclude Include="include\version.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Offsets.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\Formatter.h">
       <Filter>include</Filter>
     </ClInclude>
