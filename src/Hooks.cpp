@@ -1,9 +1,3 @@
-#include "RE/BSCore/BSFixedString.h"
-#include "RE/BSMain/SettingCollection/GameSettingCollection.h"
-#include "RE/Misc/Calendar.h"
-
-#include "SKSE/API.h"
-
 #include "Hooks.h"
 #include "Formatter.h"
 #include "Settings.h"

@@ -1,13 +1,7 @@
-﻿#include "SKSE/SKSE.h"
-
-#include "version.h"
+﻿#include "version.h"
 #include "Settings.h"
 #include "Hooks.h"
 
-#include <winuser.h>
-#include <spdlog\include\spdlog\sinks\msvc_sink.h>
-#include <spdlog\include\spdlog\sinks\basic_file_sink.h>
-#include <spdlog\spdlog.h>
 #include <filesystem>
 
 void ShowErrorMessage(std::string a_error)
@@ -18,7 +12,8 @@ void ShowErrorMessage(std::string a_error)
 extern "C" {
 	bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
 	{
-		auto path = SKSE::log::log_directory() / "TimeFormatChanger.log";
+		assert(SKSE::log::log_directory().has_value());
+		auto path = SKSE::log::log_directory().value() / std::filesystem::path("TimeFormatChanger.log");
 		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path.string(), true);
 		auto log = std::make_shared<spdlog::logger>("global log", std::move(sink));
 
@@ -54,15 +49,7 @@ extern "C" {
 			return false;
 		}
 
-		if (SKSE::AllocTrampoline(2 << 3))
-		{
-			SKSE::log::info("Trampoline creation successful.");
-		}
-		else {
-			SKSE::log::critical("Trampoline creation failed!");
-			ShowErrorMessage("Trampoline creation failed!\nThe mod will be disabled.");
-			return false;
-		}
+		SKSE::AllocTrampoline(2 << 3);
 
 		return true;
 	}

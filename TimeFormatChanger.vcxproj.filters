@@ -13,6 +13,9 @@
     <ClCompile Include="src\Formatter.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\PCH.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />
@@ -36,6 +39,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\Formatter.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PCH.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
