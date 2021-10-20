@@ -1,5 +1,5 @@
 #include "Settings.h"
-#include "SimpleIni/SimpleIni.h"
+#include "SimpleIni.h"
 
 namespace TimeFormatChanger
 {

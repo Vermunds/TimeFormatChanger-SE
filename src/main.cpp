@@ -1,16 +1,12 @@
-﻿#include "version.h"
-#include "Settings.h"
+﻿#include "Settings.h"
 #include "Hooks.h"
 
-#include <filesystem>
+#include "version.h"
 
-void ShowErrorMessage(std::string a_error)
-{
-	MessageBoxA(nullptr, a_error.c_str(), "Time Format Changer - Error", MB_OK | MB_ICONERROR | MB_DEFBUTTON2 | MB_SYSTEMMODAL);
-}
+constexpr auto MESSAGE_BOX_TYPE = 0x00001010L; // MB_OK | MB_ICONERROR | MB_SYSTEMMODAL
 
 extern "C" {
-	bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+	DLLEXPORT bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
 	{
 		assert(SKSE::log::log_directory().has_value());
 		auto path = SKSE::log::log_directory().value() / std::filesystem::path("TimeFormatChanger.log");
@@ -23,11 +19,11 @@ extern "C" {
 		spdlog::set_default_logger(std::move(log));
 		spdlog::set_pattern("%g(%#): [%^%l%$] %v", spdlog::pattern_time_type::local);
 
-		SKSE::log::info("Time Format Changer v" + std::string(TIMEFORMATCHANGER_VERSION_VERSTRING));
+		SKSE::log::info("Time Format Changer v" + std::string(Version::NAME) + " - (" + std::string(__TIMESTAMP__) + ")");
 
 		a_info->infoVersion = SKSE::PluginInfo::kVersion;
-		a_info->name = "Time Format Changer";
-		a_info->version = 1;
+		a_info->name = Version::PROJECT.data();
+		a_info->version = Version::MAJOR;
 
 		if (a_skse->IsEditor()) {
 			SKSE::log::critical("Loaded in editor, marking as incompatible!");
@@ -36,16 +32,7 @@ extern "C" {
 
 		if (a_skse->RuntimeVersion() < SKSE::RUNTIME_1_5_3) {
 			SKSE::log::critical("Unsupported runtime version " + a_skse->RuntimeVersion().string());
-			ShowErrorMessage("Unsupported runtime version " + a_skse->RuntimeVersion().string() + "\n\nPlease update your game to a more recent version to use this mod.");
-			return false;
-		}
-
-		//Check if Address Library is available
-		std::string fileName = "Data/SKSE/Plugins/version-" + a_skse->RuntimeVersion().string() + ".bin";
-		if (!std::filesystem::exists(fileName))
-		{
-			SKSE::log::critical("Address Library for SKSE Plugins not found for current runtime version " + a_skse->RuntimeVersion().string());
-			ShowErrorMessage("Address Library for SKSE Plugins not found for current runtime version " + a_skse->RuntimeVersion().string() + "\nThe mod will be disabled.");
+			SKSE::WinAPI::MessageBox(nullptr, std::string("Unsupported runtime version " + a_skse->RuntimeVersion().string()).c_str(), "Time Format Changer - Error", MESSAGE_BOX_TYPE);
 			return false;
 		}
 
@@ -54,7 +41,7 @@ extern "C" {
 		return true;
 	}
 
-	bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
+	DLLEXPORT bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 	{
 		SKSE::log::info("Time Format Changer loaded.");
 
