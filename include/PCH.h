@@ -9,4 +9,3 @@
 using namespace std::literals;
 
 #define DLLEXPORT __declspec(dllexport)
-

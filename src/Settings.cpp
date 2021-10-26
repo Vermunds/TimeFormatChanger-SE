@@ -3,12 +3,10 @@
 
 namespace TimeFormatChanger
 {
-
 	Settings* Settings::singleton = nullptr;
 
 	Settings::Settings()
 	{
-
 	}
 
 	Settings* Settings::GetSingleton()
@@ -99,6 +97,5 @@ namespace TimeFormatChanger
 		ini.SetValue("IMMERSIVE_NAMES", "s23_24", settings->immersiveNames[23].c_str(), nullptr, true);
 
 		ini.SaveFile(".\\Data\\SKSE\\Plugins\\TimeFormatChanger.ini");
-
 	}
 }

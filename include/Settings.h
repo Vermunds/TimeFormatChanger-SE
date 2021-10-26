@@ -8,8 +8,9 @@ namespace TimeFormatChanger
 	class Settings
 	{
 	private:
-		static Settings * singleton;
+		static Settings* singleton;
 		Settings();
+
 	public:
 		std::string format;
 		std::string formatNoYear;

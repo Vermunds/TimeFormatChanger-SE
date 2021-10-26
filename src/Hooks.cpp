@@ -15,22 +15,22 @@ namespace TimeFormatChanger
 		case 1:
 		case 21:
 		case 31:
-			return gmst->GetSetting("sFirstOrdSuffix")->GetString(); //st
+			return gmst->GetSetting("sFirstOrdSuffix")->GetString();  //st
 		case 2:
 		case 22:
-			return gmst->GetSetting("sSecondOrdSuffix")->GetString(); //nd
+			return gmst->GetSetting("sSecondOrdSuffix")->GetString();  //nd
 		case 3:
 		case 23:
-			return gmst->GetSetting("sThirdOrdSuffix")->GetString(); //rd
+			return gmst->GetSetting("sThirdOrdSuffix")->GetString();  //rd
 		default:
-			return gmst->GetSetting("sDefaultOrdSuffix")->GetString(); //th
+			return gmst->GetSetting("sDefaultOrdSuffix")->GetString();  //th
 		}
 	}
 
 	void FormatTime_Hook(RE::Calendar* a_calendar, char* a_str, std::uint64_t a_bufferSize, bool a_showYear)
 	{
 		std::int32_t year = a_calendar->GetYear();
-		std::int32_t month = a_calendar->GetMonth() + 1; //indexed from 0
+		std::int32_t month = a_calendar->GetMonth() + 1;  //indexed from 0
 		std::int32_t day = static_cast<std::int32_t>(a_calendar->GetDay());
 		std::int32_t hour = static_cast<std::int32_t>(a_calendar->GetHour());
 		std::int32_t minutes = static_cast<std::int32_t>((a_calendar->GetHour() - hour) * 60);
@@ -117,7 +117,7 @@ namespace TimeFormatChanger
 		{
 			formatter.minutes = std::to_string(minutes);
 		}
-		
+
 		//Ordinal suffix
 		formatter.daySuffix = GetOrdinalSuffix(day);
 
@@ -133,7 +133,6 @@ namespace TimeFormatChanger
 		{
 			formatter.immersiveName = "Bad Hour";
 		}
-				
 
 		//Full name of the month
 		formatter.longMonth = a_calendar->GetMonthName();
@@ -146,7 +145,7 @@ namespace TimeFormatChanger
 		if (a_showYear)
 		{
 			formattedString = formatter.GetFormattedTime(settings->format);
-		} 
+		}
 		else
 		{
 			formattedString = formatter.GetFormattedTime(settings->formatNoYear);
