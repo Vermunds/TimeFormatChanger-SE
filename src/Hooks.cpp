@@ -35,7 +35,7 @@ namespace TimeFormatChanger
 		std::int32_t hour = static_cast<std::int32_t>(a_calendar->GetHour());
 		std::int32_t minutes = static_cast<std::int32_t>((a_calendar->GetHour() - hour) * 60);
 
-		Settings* settings = TimeFormatChanger::Settings::GetSingleton();
+		Settings* settings = Settings::GetSingleton();
 		RE::GameSettingCollection* gmst = RE::GameSettingCollection::GetSingleton();
 
 		Formatter formatter{};
@@ -156,6 +156,6 @@ namespace TimeFormatChanger
 
 	void InstallHook()
 	{
-		SKSE::GetTrampoline().write_branch<5>(REL::ID(static_cast<std::uint64_t>(35413)).address(), (std::uintptr_t)FormatTime_Hook);
+		SKSE::GetTrampoline().write_branch<5>(REL::ID{ 36311 }.address(), (std::uintptr_t)FormatTime_Hook);
 	}
 }

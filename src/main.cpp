@@ -1,12 +1,23 @@
-﻿#include "Settings.h"
 #include "Hooks.h"
+#include "Settings.h"
 
 #include "version.h"
 
-constexpr auto MESSAGE_BOX_TYPE = 0x00001010L;  // MB_OK | MB_ICONERROR | MB_SYSTEMMODAL
-
 extern "C" {
-	DLLEXPORT bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+
+	DLLEXPORT SKSE::PluginVersionData SKSEPlugin_Version = []() {
+		SKSE::PluginVersionData v{};
+		v.PluginVersion(REL::Version{ Version::MAJOR, Version::MINOR, Version::PATCH, 0 });
+		v.PluginName(Version::PROJECT);
+		v.AuthorName("Vermunds"sv);
+		v.CompatibleVersions({ SKSE::RUNTIME_LATEST });
+
+		v.addressLibrary = true;
+		v.sigScanning = false;
+		return v;
+	}();
+
+	DLLEXPORT bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
 	{
 		assert(SKSE::log::log_directory().has_value());
 		auto path = SKSE::log::log_directory().value() / std::filesystem::path("TimeFormatChanger.log");
@@ -21,31 +32,14 @@ extern "C" {
 
 		SKSE::log::info("Time Format Changer v" + std::string(Version::NAME) + " - (" + std::string(__TIMESTAMP__) + ")");
 
-		a_info->infoVersion = SKSE::PluginInfo::kVersion;
-		a_info->name = Version::PROJECT.data();
-		a_info->version = Version::MAJOR;
-
 		if (a_skse->IsEditor())
 		{
 			SKSE::log::critical("Loaded in editor, marking as incompatible!");
 			return false;
 		}
 
-		if (a_skse->RuntimeVersion() < SKSE::RUNTIME_1_5_3)
-		{
-			SKSE::log::critical("Unsupported runtime version " + a_skse->RuntimeVersion().string());
-			SKSE::WinAPI::MessageBox(nullptr, std::string("Unsupported runtime version " + a_skse->RuntimeVersion().string()).c_str(), "Time Format Changer - Error", MESSAGE_BOX_TYPE);
-			return false;
-		}
-
 		SKSE::AllocTrampoline(2 << 3);
-
-		return true;
-	}
-
-	DLLEXPORT bool SKSEPlugin_Load(SKSE::LoadInterface* a_skse)
-	{
-		SKSE::log::info("Time Format Changer loaded.");
+		SKSE::Init(a_skse);
 
 		TimeFormatChanger::LoadSettings();
 		SKSE::log::info("Settings loaded.");

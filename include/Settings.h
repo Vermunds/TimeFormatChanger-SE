@@ -7,10 +7,6 @@ namespace TimeFormatChanger
 {
 	class Settings
 	{
-	private:
-		static Settings* singleton;
-		Settings();
-
 	public:
 		std::string format;
 		std::string formatNoYear;
@@ -22,6 +18,12 @@ namespace TimeFormatChanger
 		std::string immersiveNames[24];
 
 		static Settings* GetSingleton();
+
+	private:
+		Settings(){};
+		~Settings(){};
+		Settings(const Settings&) = delete;
+		Settings& operator=(const Settings&) = delete;
 	};
 
 	extern void LoadSettings();
