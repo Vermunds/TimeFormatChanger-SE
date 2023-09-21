@@ -89,7 +89,7 @@ namespace TimeFormatChanger
 		}
 		else if (hour >= 1 && hour < 12)
 		{
-			//1:00 AM - 11:59 AM
+			//1:00 AM - 12:59 AM
 			formatter.am_pm = gmst->GetSetting("sTimeAM")->GetString();
 			formatter.hours12 = std::to_string(hour);
 		}
