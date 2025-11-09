@@ -1,0 +1,113 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Time Format Changer</moduleName>
+	
+	<installSteps order="Explicit">
+		<installStep name="Choose a preset">
+			<optionalFileGroups order="Explicit">
+				<group name="Choose a preset" type="SelectExactlyOne">
+					<plugins order="Explicit">
+					
+						<plugin name="Vanilla/Custom">
+							<description>Vanilla time format. Does not change anything. Select this if you want to create your own format.</description>
+							<image path="fomod/vanilla.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="01_Vanilla"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Vanilla 24h">
+							<description>Vanilla with 24 hour time format.</description>
+							<image path="fomod/vanilla24h.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="02_Vanilla24h"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Alt. Date 12h">
+							<description>Alternative date format with 12 hours.</description>
+							<image path="fomod/altdate12h.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="03_AltDate12h"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Alt. Date 24h">
+							<description>Alternative date format with 24 hours.</description>
+							<image path="fomod/altdate24h.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="04_AltDate24h"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Alt. Date Immersive">
+							<description>Alternative date format with immersive time.</description>
+							<image path="fomod/altdateimmersive.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="05_AltDateImmersive"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Short Date 12h">
+							<description>Short Date format with 12 hours.</description>
+							<image path="fomod/shortdate12h.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="06_ShortDate12h"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Short Date 24h">
+							<description>Short Date format with 24 hours.</description>
+							<image path="fomod/shortdate24h.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="07_ShortDate24h"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+						
+						<plugin name="Short Date Immersive">
+							<description>Short Date format with immersive time.</description>
+							<image path="fomod/shortdateimmersive.png"/>
+							<files>
+								<folder priority="0" destination="" source="00_RequiredFiles"/>
+								<folder priority="0" destination="" source="08_ShortDateImmersive"/>
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>						
+					</plugins>
+				</group>
+			</optionalFileGroups>
+		</installStep>
+	</installSteps>
+
+</config>
