@@ -7,15 +7,13 @@ A mod for The Elder Scrolls V: Skyrim - Special Edition.
 
 Allows you to change the time and date format used by the game to anything you want.
 
-The mod is released as a FOMOD installer.
-
 ## Features
 - Change between 12 and 24 hour time formats
 - Change between different date formats
 - Hide certain parts of the time or date
 - Replace the in-game clock with an "immersive" one. Instead of showing you the precise time, it will show you "Afternoon" or "Night"
 
-The mod comes with some presets, to make it easier to use. However, if you want to create your own format, you can change it in the provided .ini file. The mod is highly customizable.
+The mod comes with some presets, to make it easier to use. However, if you want to create your own format, you can change it in the in-game settings menu or in the provided .ini file. The mod is highly customizable.
 If you want to use the "immersive" clock, you can also change the names of the parts of the day on a hourly basis.
 
 ## INI configuration

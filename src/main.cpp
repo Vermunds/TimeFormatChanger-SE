@@ -1,7 +1,16 @@
 #include "Hooks.h"
+#include "ModConfigUI.h"
 #include "Settings.h"
 
-#include "version.h"
+#include "Version.h"
+
+static void MessageHandler(SKSE::MessagingInterface::Message* a_message)
+{
+	if (a_message->type == SKSE::MessagingInterface::kPostLoad)
+	{
+		TimeFormatChanger::InstallModConfigUI();
+	}
+}
 
 extern "C"
 {
@@ -33,6 +42,17 @@ extern "C"
 
 		SKSE::AllocTrampoline(2 << 3);
 		SKSE::Init(a_skse, false);
+
+		const SKSE::MessagingInterface* messaging = SKSE::GetMessagingInterface();
+		if (messaging->RegisterListener("SKSE", MessageHandler))
+		{
+			SKSE::log::info("Messaging interface registration successful.");
+		}
+		else
+		{
+			SKSE::log::critical("Messaging interface registration failed.");
+			return false;
+		}
 
 		TimeFormatChanger::LoadSettings();
 		SKSE::log::info("Settings loaded.");

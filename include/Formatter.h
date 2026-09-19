@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 
 namespace TimeFormatChanger
 {
@@ -19,6 +18,8 @@ namespace TimeFormatChanger
 		std::string era;            //%E
 		std::string year;           //%y
 		std::string immersiveName;  //%i
+
+		void Populate(RE::Calendar* a_calendar);
 
 		std::string GetFormattedTime(std::string a_format);
 	};

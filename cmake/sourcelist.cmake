@@ -1,12 +1,15 @@
 set(SOURCES
 	include/Formatter.h
 	include/Hooks.h
+	include/ImmersiveNames.h
 	include/PCH.h
+	include/ModConfigUI.h
 	include/Settings.h
 	include/version.h
 	src/Formatter.cpp
 	src/Hooks.cpp
-	src/PCH.cpp
+	src/ImmersiveNames.cpp
+	src/ModConfigUI.cpp
 	src/Settings.cpp
 	src/main.cpp
 )

@@ -1,10 +1,17 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 namespace TimeFormatChanger
 {
+	// Format
+	constexpr const char* FORMAT_DEFAULT_VALUE = "%D, %H:%m, %d%t%o%L, %E %y";
+	constexpr const char* FORMAT_NO_YEAR_DEFAULT_VALUE = "%D, %H:%m, %d%t%o%L";
+	constexpr bool LEADING_ZERO_HOUR_DEFAULT_VALUE = false;
+	constexpr bool LEADING_ZERO_DAY_DEFAULT_VALUE = false;
+	constexpr bool LEADING_ZERO_MONTH_DEFAULT_VALUE = false;
+
+	// Immersive name overrides, shared by every hour. Empty means the built-in name is used.
+	constexpr const char* IMMERSIVE_NAME_OVERRIDES_DEFAULT_VALUE = "";
+
 	class Settings
 	{
 	public:
@@ -15,16 +22,18 @@ namespace TimeFormatChanger
 		bool leadingZeroDay;
 		bool leadingZeroMonth;
 
-		std::string immersiveNames[24];
+		std::string immersiveNameOverrides[24];
 
 		static Settings* GetSingleton();
 
 	private:
-		Settings(){};
-		~Settings(){};
+		Settings() {};
+		~Settings() {};
 		Settings(const Settings&) = delete;
 		Settings& operator=(const Settings&) = delete;
 	};
 
-	extern void LoadSettings();
+	void LoadSettings();
+	void SaveSettings();
+	void RestoreDefaults();
 }
