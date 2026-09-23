@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.31)
 # Setup project
 project(
 	TimeFormatChanger
-	VERSION 1.2.1
+	VERSION 1.3.0
 	LANGUAGES CXX
 )
 set(FORMATTED_NAME "Time Format Changer")
