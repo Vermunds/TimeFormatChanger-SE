@@ -71,7 +71,7 @@ namespace TimeFormatChanger
 			"\n"
 			"# Example (vanilla format):\n"
 			"# Turdas, 1:13 PM, 21st of Last Seed, 4E 201\n"
-			"# %D, %h:%m %a, %d%t%o%M, %E %y\n"
+			"# %D, %h:%m %a, %d%t%o%L, %E %y\n"
 			"#\n"
 			"# Warning: too long strings may get trimmed. The actual character limit depends on the content. It is recommended to try the longest possible date before use.\n"
 			"# You can force display any date if you change the format code to that specific date, like this:\n"
