@@ -1,7 +1,7 @@
 # Time Format Changer
 [![Nexus Mods](https://img.shields.io/badge/NexusMods-Download-orange)](https://www.nexusmods.com/skyrimspecialedition/mods/28921)
 [![GitHub release](https://img.shields.io/github/v/release/Vermunds/TimeFormatChanger-SE)](https://github.com/Vermunds/TimeFormatChanger-SE/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 A mod for The Elder Scrolls V: Skyrim - Special Edition.
 
@@ -16,14 +16,8 @@ Allows you to change the time and date format used by the game to anything you w
 The mod comes with some presets, to make it easier to use. However, if you want to create your own format, you can change it in the in-game settings menu or in the provided .ini file. The mod is highly customizable.
 If you want to use the "immersive" clock, you can also change the names of the parts of the day on a hourly basis.
 
-## INI configuration
-The configuration file is located at:
-
-`<Skyrim install folder>/Data/SKSE/Plugins/TimeFormatChanger.ini`
-
-The configuration file is fully commented for clarity. Lines starting with # are comments and have no effect in-game.
-Delete the .ini file and launch the game once to regenerate the defaults in case you lost them.
-Note that some mod managers may place this file in different locations than the one above. In this case, refer to the documentation of your mod manager of choice.
+## Configuration
+The settings can be changed in-game, in the settings menu of either SKSE Menu Framework or Fuzz's Legally Intelligible Core Kit, or in `Data/SKSE/Plugins/TimeFormatChanger.ini`. Changes made in the menu are saved to the same file.
 
 ## Custom format
 Use these tags to create a custom format. These tags will be replaced with the actual values in-game:
@@ -42,7 +36,7 @@ Use these tags to create a custom format. These tags will be replaced with the a
 - `%y` - Year
 - `%i` - Immersive time of day
 
-Example (vanilla format): `%D, %h:%m %a, %d%t%o%M, %E %y`  
+Example (vanilla format): `%D, %h:%m %a, %d%t%o%L, %E %y`  
 will turn into: `Turdas, 1:13 PM, 21st of Last Seed, 4E 201`
 
 Warning: too long strings may get trimmed (unless you use a mod to fix this issue). The actual character limit depends on the content. It is recommended to try the longest possible date before use.
@@ -52,7 +46,7 @@ You can force display any date if you change the format code to that specific da
 
 This will always display "Loredas, 11:13 PM, 21st of Morning Star, 4E 201" regardless of the actual in-game time.
 
-To view/change the immersive time of day values, refer to the .ini configuration file.
+The immersive time of day names can be changed in the settings menu or in the .ini file.
 
 ## Download
 Available on [Nexusmods](https://www.nexusmods.com/skyrimspecialedition/mods/28921).
@@ -61,4 +55,4 @@ Available on [Nexusmods](https://www.nexusmods.com/skyrimspecialedition/mods/289
 To build this mod refer to my wrapper project [here](https://github.com/Vermunds/SkyrimSE-Mods).
 
 ## License
-This software is available under the MIT License. See LICENSE.md for details.
+This software is available under the MIT License. See LICENSE for details.
