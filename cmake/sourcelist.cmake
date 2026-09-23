@@ -5,7 +5,6 @@ set(SOURCES
 	include/PCH.h
 	include/ModConfigUI.h
 	include/Settings.h
-	include/version.h
 	src/Formatter.cpp
 	src/Hooks.cpp
 	src/ImmersiveNames.cpp
