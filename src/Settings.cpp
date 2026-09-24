@@ -8,14 +8,14 @@ namespace
 	void IniSection(CSimpleIniA& a_ini, const char* a_section, const char* a_comment = nullptr)
 	{
 		a_ini.SetValue(a_section, nullptr, nullptr, a_comment);
-		SKSE::log::info("[{}]", a_section);
+		logger::info("[{}]", a_section);
 	}
 
 	bool IniGetBool(CSimpleIniA& a_ini, const char* a_section, const char* a_key, bool a_default, const char* a_comment = nullptr)
 	{
 		bool val = a_ini.GetBoolValue(a_section, a_key, a_default);
 		a_ini.SetBoolValue(a_section, a_key, val, a_comment, true);
-		SKSE::log::info("  {}: {}", a_key, val);
+		logger::info("  {}: {}", a_key, val);
 		return val;
 	}
 
@@ -23,7 +23,7 @@ namespace
 	{
 		std::string val = a_ini.GetValue(a_section, a_key, a_default);
 		a_ini.SetValue(a_section, a_key, val.c_str(), a_comment, true);
-		SKSE::log::info("  {}: {}", a_key, val);
+		logger::info("  {}: {}", a_key, val);
 		return val;
 	}
 }
@@ -50,7 +50,7 @@ namespace TimeFormatChanger
 		ini.SetUnicode();
 		ini.LoadFile(INI_PATH);
 
-		SKSE::log::info("Loading settings from: {}", std::filesystem::absolute(INI_PATH).string());
+		logger::info("Loading settings from: {}", std::filesystem::absolute(INI_PATH).string());
 
 		IniSection(ini, "FORMAT",
 			"# Use these tags to create a custom format : \n"
@@ -96,7 +96,7 @@ namespace TimeFormatChanger
 		// Legacy settings cleanup
 		ini.Delete("IMMERSIVE_NAMES", nullptr, true);
 
-		SKSE::log::info("Settings loaded.");
+		logger::info("Settings loaded.");
 
 		ini.SaveFile(INI_PATH);
 	}
@@ -122,7 +122,7 @@ namespace TimeFormatChanger
 
 		ini.SaveFile(INI_PATH);
 
-		SKSE::log::info("Settings saved.");
+		logger::info("Settings saved.");
 	}
 
 	void RestoreDefaults()
